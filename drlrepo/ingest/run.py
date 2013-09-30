@@ -57,6 +57,7 @@ def handle_page_object(obj, page):
     page_obj.thumbnail.content = open(page.thumbnail_path)
     page_obj.thumbnail.label = page.thumbnail_label 
     page_obj.save()
+    print 'ingested %s' % (page.label,)
     # TODO: mix
     # clean up
     page.remove_thumbnail()
@@ -101,6 +102,10 @@ def ingest_item(item_id):
     # thumb
     obj.thumbnail.content = open(o.thumbnail_path)
     obj.thumbnail.label = o.thumbnail_label 
+    # target
+    if o.target_path:
+        obj.target.content = open(o.target_path)
+        obj.target.label = o.target_label 
     # initial save
     obj.save()
         

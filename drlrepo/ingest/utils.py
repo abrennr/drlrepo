@@ -82,6 +82,11 @@ def get_ocr_path(m):
         if m['files'][f]['use'] == 'OCR_ZIP':
             return m['files'][f]['path']
 
+def get_target_path(m):
+    for f in m['files']:
+        if m['files'][f]['use'] == 'TARGET':
+            return m['files'][f]['path']
+
 def create_thumbnail(thumb_source):
     """
     Creates a larger thumbnail (i.e., 250px on the long side) than what exists

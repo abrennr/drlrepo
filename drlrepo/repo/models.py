@@ -12,19 +12,25 @@ class PittBook(IslandoraBook):
         'versionable': True,
         'mimetype': 'text/xml',
     })
+    obj = FileDatastream("TARGET", "Scanning Target", defaults={
+        'versionable': True,
+        'mimetype': 'image/tiff',
+    })
 
 class PittBasicImage(IslandoraBasicImage):
-    pass
+    obj = FileDatastream("TARGET", "Scanning Target", defaults={
+        'versionable': True,
+        'mimetype': 'image/tiff',
+    })
 
 class PittPage(IslandoraPage):
     pass
 
 class PittNewspaperIssue(IslandoraNewspaperIssue):
-    pass
-
-class PittLargeImage(IslandoraLargeImage):
-    kml = FileDatastream("KML", "KML data", defaults={
-        'versionable': False,
-        'mimetype': 'text/xml',
+    obj = FileDatastream("TARGET", "Scanning Target", defaults={
+        'versionable': True,
+        'mimetype': 'image/tiff',
     })
 
+class PittLargeImage(IslandoraLargeImage):
+    pass
