@@ -3,7 +3,6 @@ import os
 import zipfile
 import shutil
 import utils as ingest_utils
-sys.path.append('/usr/local/dlxs/prep/w/workflow/lib')
 import drl.mods.utils
 import drl.mets.utils
 

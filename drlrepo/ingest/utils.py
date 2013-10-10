@@ -5,7 +5,6 @@ import subprocess
 import shutil
 import glob
 import json
-sys.path.append('/home/abrenner/django/drlrepo')
 from drlrepo.repo.models import PittLargeImage, PittBook, PittPage, PittNewspaperIssue 
 """
 Utility script to migrate digital objects from the legacy (as of 2012)

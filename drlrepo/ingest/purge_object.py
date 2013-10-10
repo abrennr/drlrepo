@@ -1,6 +1,5 @@
 import sys
 import os
-sys.path.append('/home/abrenner/django/drlrepo')
 os.environ["DJANGO_SETTINGS_MODULE"] = 'drlrepo.settings'
 from eulfedora.server import Repository
 
