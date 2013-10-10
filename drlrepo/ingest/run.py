@@ -6,6 +6,7 @@ from eulfedora.server import Repository
 from eulxml.xmlmap.dc import DublinCore
 import eulxml.xmlmap
 from drlrepo.ingest.models import BaseIngestObject 
+import bagit
 
 repo = Repository()
 
@@ -14,10 +15,8 @@ def handle_image_object(obj, o):
     obj.obj.label = o.obj_label 
     obj.jp2.content = open(o.jp2_path)
     obj.jp2.label = o.jp2_label 
-    if o.jp2_is_temp:
-        o.remove_jp2()
     # TODO: MIX
-    return obj
+    obj.save()
 
 def handle_paged_object(obj, o):
     # mets 
@@ -31,7 +30,7 @@ def handle_paged_object(obj, o):
     # pages
     for page in o.pages:
         handle_page_object(obj, page)
-    return obj
+    obj.save()
 
 def handle_page_object(obj, page):
     """
@@ -57,36 +56,37 @@ def handle_page_object(obj, page):
     page_obj.thumbnail.content = open(page.thumbnail_path)
     page_obj.thumbnail.label = page.thumbnail_label 
     page_obj.save()
-    print 'ingested %s' % (page.label,)
     # TODO: mix
     # clean up
     page.remove_thumbnail()
     page.remove_ocr()
-    if page.jp2_is_temp:
-        page.remove_jp2()
 
     # RELS-EXT
 
+    isPageOf = 'http://islandora.ca/ontology/relsext#isPageOf'
+    page_obj.add_relationship(isPageOf, str(obj.uri))
+
+    isMemberOf = 'info:fedora/fedora-system:def/relations-external#isMemberOf'
+    page_obj.add_relationship(isMemberOf, str(obj.uri))
+
     isPageNumber = 'http://islandora.ca/ontology/relsext#isPageNumber'
-    page_obj.add_relationship(isPageNumber,  page.label)
+    page_obj.add_relationship(isPageNumber, page.label)
 
     # should the page number be a counter here instead of int(page_basename)?
     isSequenceNumber = 'http://islandora.ca/ontology/relsext#isSequenceNumber'
-    page_obj.add_relationship(isSequenceNumber,  page.seq)
+    page_obj.add_relationship(isSequenceNumber, page.seq)
 
     isSection = 'http://islandora.ca/ontology/relsext#isSection'
     page_obj.add_relationship(isSection, '1')
 
-    isPageOf = 'http://islandora.ca/ontology/relsext#isPageOf'
-    page_obj.add_relationship(isPageOf, obj.uri)
+    print 'ingested %s' % (page.label,)
 
-    isMemberOf = 'info:fedora/fedora-system:def/relations-external#isMemberOf'
-    page_obj.add_relationship(isMemberOf, obj.uri)
-
-
-
-def ingest_item(item_id):
-    o = BaseIngestObject(item_id)
+def ingest_item(bag_path):
+    bag = bagit.Bag(bag_path)
+    # real simple validation check for now
+    if not bag.is_valid():
+        print 'bag %s failed validation check. Exiting.' % (bag_path,)
+    o = BaseIngestObject(bag_path)
     # check if item already exists.  For now, purge pre-existing versions
     previous = repo.get_object(pid=o.pid)
     if previous.exists:
@@ -117,11 +117,9 @@ def ingest_item(item_id):
 
     # handle different types:
     if o.type == 'image' or o.type == 'map':
-        obj = handle_image_object(obj, o)
-        obj.save()
-    elif 'text' in o.type or 'manuscript' in o.type:
-        obj = handle_paged_object(obj, o)
-        obj.save()
+        handle_image_object(obj, o)
+    elif 'text' in o.type or 'manuscript' in o.type or 'newspaper' in o.type:
+        handle_paged_object(obj, o)
     else:
         print 'WARNING: %s not recognized item type for %s' % (o.type, o.pid)
     # clean up

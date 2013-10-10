@@ -3,7 +3,7 @@ import os
 import zipfile
 import subprocess
 import shutil
-import urllib2
+import glob
 import json
 sys.path.append('/home/abrenner/django/drlrepo')
 from drlrepo.repo.models import PittLargeImage, PittBook, PittPage, PittNewspaperIssue 
@@ -29,10 +29,20 @@ ITEM_TYPE_CM_MAP = {
     'page': PittPage
 }
 
-def get_item_metadata(item_id):
-    url = 'http://bigfoot.library.pitt.edu/django/workflow/item/%s/json/' % (item_id,)
-    u = urllib2.urlopen(url)
-    return json.load(u)
+def get_item_metadata(bag_path):
+    metadata_file_lookup = os.path.join(
+        bag_path,
+        'data',
+        '*.drl-admin.json'
+    ) 
+    matches = glob.glob(metadata_file_lookup)
+    if len(matches) == 1:
+        return json.load(open(matches[0], 'r'))
+    else:
+        raise Exception('metadata file not found, expecting %s' % (metadata_file_lookup,))
+
+def get_item_id(m):
+    return m['item']['do_id']
 
 def get_item_type(m):
     return m['item']['type']
@@ -40,52 +50,52 @@ def get_item_type(m):
 def get_item_thumbnail_source(m): 
     for f in m['files']:
         if m['files'][f]['name'] == m['item']['thumb_filename']: 
-            return m['files'][f]['path']
+            return m['files'][f]['name']
 
-def get_mods_path(m):
+def get_mods_name(m):
     for f in m['files']:
         if m['files'][f]['use'] == 'MODS':
-            return m['files'][f]['path']
+            return m['files'][f]['name']
 
-def get_marcxml_path(m):
+def get_marcxml_name(m):
     for f in m['files']:
         if m['files'][f]['use'] == 'MARCXML':
-            return m['files'][f]['path']
+            return m['files'][f]['name']
 
-def get_mets_path(m):
+def get_mets_name(m):
     for f in m['files']:
         if m['files'][f]['use'] == 'METS':
-            return m['files'][f]['path']
+            return m['files'][f]['name']
 
-def get_dc_path(m):
+def get_dc_name(m):
     for f in m['files']:
         if m['files'][f]['use'] == 'DC':
-            return m['files'][f]['path']
+            return m['files'][f]['name']
 
 def get_master_file_list(m):
     masters = []
     for f in m['files']:
         if m['files'][f]['use'] == 'MASTER':
-            masters.append(m['files'][f]['path'])
+            masters.append(m['files'][f]['name'])
     return masters 
 
-def get_jp2_path(m, t):
-    expected_jp2_path = t.replace('.tif', '.jp2') 
+def get_jp2_name(m, t):
+    expected_jp2_name = t.replace('.tif', '.jp2') 
     for f in m['files']:
         if m['files'][f]['use'] == 'JP2':
-            if m['files'][f]['path'] == expected_jp2_path:
-                return m['files'][f]['path']
+            if m['files'][f]['name'] == expected_jp2_name:
+                return m['files'][f]['name']
     return None
 
-def get_ocr_path(m):
+def get_ocr_name(m):
     for f in m['files']:
         if m['files'][f]['use'] == 'OCR_ZIP':
-            return m['files'][f]['path']
+            return m['files'][f]['name']
 
-def get_target_path(m):
+def get_target_name(m):
     for f in m['files']:
         if m['files'][f]['use'] == 'TARGET':
-            return m['files'][f]['path']
+            return m['files'][f]['name']
 
 def create_thumbnail(thumb_source):
     """
