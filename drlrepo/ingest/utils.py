@@ -5,6 +5,7 @@ import subprocess
 import shutil
 import glob
 import json
+import drlutils.image.utils
 from drlrepo.repo.models import PittLargeImage, PittBook, PittPage, PittNewspaperIssue 
 """
 Utility script to migrate digital objects from the legacy (as of 2012)
@@ -109,21 +110,17 @@ def create_thumbnail(thumb_source):
     """
     shutil.copy(thumb_source, '/usr/local/tmp/')
     thumb_temp = os.path.join('/usr/local/tmp', os.path.basename(thumb_source))
-    encoder = '/usr/local/dlxs/prep/w/workflow/bin/image/encodeThumb'
-    thumb_file = subprocess.Popen([encoder, thumb_temp, "250"], stdout=subprocess.PIPE).communicate()[0].strip()
+    thumb_file = drlutils.image.utils.encode_thumb(thumb_temp, size='250') 
     os.remove(thumb_temp)
     return thumb_file
 
 def create_tmp_jp2(parent, tiff):
     shutil.copy(tiff, '/usr/local/tmp/')
     jp2_source = os.path.join('/usr/local/tmp', os.path.basename(tiff))
+    type = 'image'
     if 'text' in parent.type: 
-        encoder = '/usr/local/dlxs/prep/w/workflow/bin/image/encodeJp2TextsKdu'
-    else:
-        encoder = '/usr/local/dlxs/prep/w/workflow/bin/image/encodeJp2Kdu'
-    jp2_file = subprocess.Popen(
-        [encoder, jp2_source],
-        stdout=subprocess.PIPE).communicate()[0].strip()
+        type = 'text'
+    jp2_file = drlutils.image.utils.encode_jp2(jp2_source, type=type) 
     os.remove(jp2_source)
     return jp2_file
 
@@ -160,7 +157,6 @@ Note: this converter is not finished yet
 def create_pdf(fedora_object, tiff):
     """
     Create pdf derivative from tiff
-    /usr/local/dlxs contains an encoder for this?
     """
     baseName = os.path.splitext(tiff.name)[0]
     pdf_file = os.path.join("/usr/local/tmp", "%s.pdf" % baseName)
