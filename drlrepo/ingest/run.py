@@ -102,7 +102,7 @@ def ingest_item(bag_path):
     obj.thumbnail.content = open(o.thumbnail_path)
     obj.thumbnail.label = o.thumbnail_label 
     # target
-    if o.target_path:
+    if o.target_label:
         obj.target.content = open(o.target_path)
         obj.target.label = o.target_label 
     # initial save
