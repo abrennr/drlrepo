@@ -109,15 +109,15 @@ def create_thumbnail(thumb_source):
     returns path to the thumbnail file
 
     """
-    shutil.copy(thumb_source, 'drlrepo.ingest.config.TEMP_DIR/')
-    thumb_temp = os.path.join('drlrepo.ingest.config.TEMP_DIR', os.path.basename(thumb_source))
+    shutil.copy(thumb_source, drlrepo.ingest.config.TEMP_DIR/)
+    thumb_temp = os.path.join(drlrepo.ingest.config.TEMP_DIR, os.path.basename(thumb_source))
     thumb_file = drlutils.image.utils.encode_thumb(thumb_temp, size='250') 
     os.remove(thumb_temp)
     return thumb_file
 
 def create_tmp_jp2(parent, tiff):
-    shutil.copy(tiff, 'drlrepo.ingest.config.TEMP_DIR/')
-    jp2_source = os.path.join('drlrepo.ingest.config.TEMP_DIR', os.path.basename(tiff))
+    shutil.copy(tiff, drlrepo.ingest.config.TEMP_DIR/)
+    jp2_source = os.path.join(drlrepo.ingest.config.TEMP_DIR, os.path.basename(tiff))
     type = 'image'
     if 'text' in parent.type: 
         type = 'text'

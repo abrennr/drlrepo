@@ -1,1 +1,1 @@
-TEMP_DIR = '/usr/local/tmp'
+TEMP_DIR = '/tmp'
