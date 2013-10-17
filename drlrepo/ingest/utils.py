@@ -6,6 +6,7 @@ import shutil
 import glob
 import json
 import drlutils.image.utils
+import drlrepo.ingest.config
 from drlrepo.repo.models import PittLargeImage, PittBook, PittPage, PittNewspaperIssue 
 """
 Utility script to migrate digital objects from the legacy (as of 2012)
@@ -108,15 +109,15 @@ def create_thumbnail(thumb_source):
     returns path to the thumbnail file
 
     """
-    shutil.copy(thumb_source, '/usr/local/tmp/')
-    thumb_temp = os.path.join('/usr/local/tmp', os.path.basename(thumb_source))
+    shutil.copy(thumb_source, 'drlrepo.ingest.config.TEMP_DIR/')
+    thumb_temp = os.path.join('drlrepo.ingest.config.TEMP_DIR', os.path.basename(thumb_source))
     thumb_file = drlutils.image.utils.encode_thumb(thumb_temp, size='250') 
     os.remove(thumb_temp)
     return thumb_file
 
 def create_tmp_jp2(parent, tiff):
-    shutil.copy(tiff, '/usr/local/tmp/')
-    jp2_source = os.path.join('/usr/local/tmp', os.path.basename(tiff))
+    shutil.copy(tiff, 'drlrepo.ingest.config.TEMP_DIR/')
+    jp2_source = os.path.join('drlrepo.ingest.config.TEMP_DIR', os.path.basename(tiff))
     type = 'image'
     if 'text' in parent.type: 
         type = 'text'
@@ -132,7 +133,7 @@ def create_mix(tiff):
     Extract MIX metadata from the input tiff file
     """
     basename = os.path.splitext(tiff.name)[0]
-    mix_file = os.path.join("/usr/local/tmp", "%s.mix.xml" % baseName)
+    mix_file = os.path.join("drlrepo.ingest.config.TEMP_DIR", "%s.mix.xml" % baseName)
     out_file = open(mix_file, "w")
     #cmd= jhove -h xml $INFILE | xsltproc jhove2mix.xslt - > `basename ${$INFILE%.*}.mix`
     jhoveCmd1 = ["/opt/jhove/jhove", "-h", "xml", tiff.name]
@@ -159,7 +160,7 @@ def create_pdf(fedora_object, tiff):
     Create pdf derivative from tiff
     """
     baseName = os.path.splitext(tiff.name)[0]
-    pdf_file = os.path.join("/usr/local/tmp", "%s.pdf" % baseName)
+    pdf_file = os.path.join("drlrepo.ingest.config.TEMP_DIR", "%s.pdf" % baseName)
     #os.remove(pdf_file)
     return
 
