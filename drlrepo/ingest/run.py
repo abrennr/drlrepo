@@ -22,7 +22,7 @@ def handle_paged_object(obj, o):
     obj.mets.content = open(o.mets_path)
     obj.mets.label = o.mets_label 
     # marcxml
-    if o.marcxml_path:
+    if o.marcxml_label:
         obj.marcxml.content = open(o.marcxml_path)
         obj.marcxml.label = o.marcxml_label 
     # TODO: pdf
