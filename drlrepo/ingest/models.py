@@ -38,7 +38,7 @@ class BaseIngestObject:
         self.dc_path = os.path.join(pathroot, self.dc_label) 
         self.marcxml_label = drlrepo.ingest.utils.get_marcxml_name(m)
         if self.marcxml_label:
-            self.marxml_path = os.path.join(pathroot, self.marcxml_label) 
+            self.marcxml_path = os.path.join(pathroot, self.marcxml_label) 
         self.mets_label = drlrepo.ingest.utils.get_mets_name(m)
         if self.mets_label:
             self.mets_path = os.path.join(pathroot, self.mets_label) 
