@@ -38,7 +38,7 @@ class IslandoraBasicImage(DigitalObject):
         'versionable': True,
         'mimetype': 'image/tiff',
     })
-    obj = FileDatastream("MEDIUM_SIZE", "Derivative medium size image", defaults={
+    jpg = FileDatastream("MEDIUM_SIZE", "Derivative medium size image", defaults={
         'versionable': False,
         'mimetype': 'image/jpeg',
     })
