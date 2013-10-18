@@ -3,6 +3,7 @@ import os
 os.environ["DJANGO_SETTINGS_MODULE"] = 'drlrepo.settings'
 from eulfedora.server import Repository
 from eulxml.xmlmap.dc import DublinCore
+from eulxml.xmlmap.mods import MODS 
 import eulxml.xmlmap
 from drlrepo.ingest.models import BaseIngestObject 
 import bagit
@@ -93,7 +94,8 @@ def ingest_item(bag_path):
     obj = repo.get_object(pid=o.pid, create=True, type=o.fedora_type)
     obj.label = o.label
     # mods
-    obj.mods.content = open(o.mods_path)
+    #obj.mods.content = open(o.mods_path)
+    obj.mods.content = eulxml.xmlmap.load_xmlobject_from_file(o.mods_path, xmlclass=MODS)
     obj.mods.label = o.mods_label 
     # dc
     obj.dc.content = eulxml.xmlmap.load_xmlobject_from_file(o.dc_path, xmlclass=DublinCore)
