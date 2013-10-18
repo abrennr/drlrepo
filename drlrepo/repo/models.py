@@ -41,4 +41,7 @@ class PittNewspaperIssue(IslandoraNewspaperIssue):
     })
 
 class PittLargeImage(IslandoraLargeImage):
-    pass
+    target = FileDatastream("TARGET", "Scanning Target", defaults={
+        'versionable': True,
+        'mimetype': 'image/tiff',
+    })
