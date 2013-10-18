@@ -12,7 +12,6 @@ class IslandoraAudio(DigitalObject):
     mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
         'mimetype': 'text/xml',
-        'control_group': 'X',
     })
     obj = FileDatastream("OBJ", "Master File", defaults={
         'versionable': True,
@@ -32,7 +31,6 @@ class IslandoraBasicImage(DigitalObject):
     mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
         'mimetype': 'text/xml',
-        'control_group': 'X',
     })
     obj = FileDatastream("OBJ", "Master File", defaults={
         'versionable': True,
@@ -53,7 +51,6 @@ class IslandoraBook(DigitalObject):
     mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
         'mimetype': 'text/xml',
-        'control_group': 'X',
     })
     pdf = FileDatastream("PDF", "PDF derivative", defaults={
         'versionable': False,
@@ -71,7 +68,6 @@ class IslandoraPage(DigitalObject):
     mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
         'mimetype': 'text/xml',
-        'control_group': 'X',
     })
     obj = FileDatastream("OBJ", "Master File", defaults={
         'versionable': True,
@@ -109,7 +105,6 @@ class IslandoraLargeImage(DigitalObject):
     mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
         'mimetype': 'text/xml',
-        'control_group': 'X',
     })
     obj = FileDatastream("OBJ", "Master File", defaults={
         'versionable': True,
@@ -134,7 +129,6 @@ class IslandoraNewspaperIssue(DigitalObject):
     mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
         'mimetype': 'text/xml',
-        'control_group': 'X',
     })
     pdf = FileDatastream("PDF", "PDF derivative", defaults={
         'versionable': False,
@@ -174,7 +168,6 @@ class IslandoraVideo(DigitalObject):
     mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
         'mimetype': 'text/xml',
-        'control_group': 'X',
     })
     obj = FileDatastream("OBJ", "Master File", defaults={
         'versionable': True,
