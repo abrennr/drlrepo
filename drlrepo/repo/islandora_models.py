@@ -1,5 +1,6 @@
 from django.db import models
-from eulfedora.models import DigitalObject, FileDatastream, FileDatastream, RdfDatastream
+from eulfedora.models import DigitalObject, FileDatastream, FileDatastream, RdfDatastream, XmlDatastream
+from eulxml.xmlmap.mods import MODS
 
 class IslandoraAudio(DigitalObject):
     ISLANDORA_CONTENT_MODEL = 'info:fedora/islandora:sp-audioCModel'
@@ -8,7 +9,7 @@ class IslandoraAudio(DigitalObject):
         'versionable': False,
         'mimetype': 'image/jpeg',
     })
-    mods = FileDatastream("MODS", "MODS", defaults={
+    mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
         'mimetype': 'text/xml',
         'control_group': 'X',
@@ -28,7 +29,7 @@ class IslandoraBasicImage(DigitalObject):
         'versionable': False,
         'mimetype': 'image/jpeg',
     })
-    mods = FileDatastream("MODS", "MODS", defaults={
+    mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
         'mimetype': 'text/xml',
         'control_group': 'X',
@@ -49,7 +50,7 @@ class IslandoraBook(DigitalObject):
         'versionable': False,
         'mimetype': 'image/jpeg',
     })
-    mods = FileDatastream("MODS", "MODS", defaults={
+    mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
         'mimetype': 'text/xml',
         'control_group': 'X',
@@ -67,7 +68,7 @@ class IslandoraPage(DigitalObject):
         'versionable': False,
         'mimetype': 'image/jpeg',
     })
-    mods = FileDatastream("MODS", "MODS", defaults={
+    mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
         'mimetype': 'text/xml',
         'control_group': 'X',
@@ -105,7 +106,7 @@ class IslandoraLargeImage(DigitalObject):
         'versionable': False,
         'mimetype': 'image/jpeg',
     })
-    mods = FileDatastream("MODS", "MODS", defaults={
+    mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
         'mimetype': 'text/xml',
         'control_group': 'X',
@@ -130,7 +131,7 @@ class IslandoraNewspaperIssue(DigitalObject):
         'versionable': False,
         'mimetype': 'image/jpeg',
     })
-    mods = FileDatastream("MODS", "MODS", defaults={
+    mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
         'mimetype': 'text/xml',
         'control_group': 'X',
@@ -147,7 +148,7 @@ class IslandoraPDF(DigitalObject):
         'versionable': False,
         'mimetype': 'image/jpeg',
     })
-    mods = FileDatastream("MODS", "MODS", defaults={
+    mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
         'mimetype': 'text/xml',
     })
@@ -170,7 +171,7 @@ class IslandoraVideo(DigitalObject):
         'versionable': False,
         'mimetype': 'image/jpeg',
     })
-    mods = FileDatastream("MODS", "MODS", defaults={
+    mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
         'mimetype': 'text/xml',
         'control_group': 'X',
