@@ -125,32 +125,6 @@ def create_tmp_jp2(parent, tiff):
     os.remove(jp2_source)
     return jp2_file
 
-"""
-Note: this converter is not finished yet
-"""
-def create_mix(tiff):
-    """
-    Extract MIX metadata from the input tiff file
-    """
-    basename = os.path.splitext(tiff.name)[0]
-    mix_file = os.path.join("drlrepo.ingest.config.TEMP_DIR", "%s.mix.xml" % baseName)
-    out_file = open(mix_file, "w")
-    #cmd= jhove -h xml $INFILE | xsltproc jhove2mix.xslt - > `basename ${$INFILE%.*}.mix`
-    jhoveCmd1 = ["/opt/jhove/jhove", "-h", "xml", tiff.name]
-    jhoveCmd2 = ["xsltproc", "data/jhove2mix.xslt", "-"] # complete cmd for xsltproc
-    #jhoveCmd2 = ["xalan", "-xsl", "data/jhove2mix.xslt"] # complete cmd for xalan
-    p1 = subprocess.Popen(jhoveCmd1, stdout=subprocess.PIPE)
-    p2 = subprocess.Popen(jhoveCmd2, stdin=p1.stdout, stdout=out_file)
-    r = p2.communicate()
-    if os.path.getsize(mix_file) == 0:
-        # failed for some reason
-        print("jhove conversion failed")
-    else:
-        pass
-    out_file.close()
-    """ end extract """
-    os.remove(mix_file) # finished with that
-    return
 
 """
 Note: this converter is not finished yet
