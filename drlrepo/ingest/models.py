@@ -45,6 +45,8 @@ class BaseIngestObject:
         self.target_label = drlrepo.ingest.utils.get_target_name(m)
         if self.target_label:
             self.target_path = os.path.join(pathroot, self.target_label) 
+        self.thumbnail_large_label = drlrepo.ingest.utils.get_thumb_large_name(m)
+        self.thumbnail_large_path = os.path.join(pathroot, self.thumb_large_label) 
         item_thumbnail_source = os.path.join(pathroot, drlrepo.ingest.utils.get_item_thumbnail_source(m))
         self.thumbnail_path = drlrepo.ingest.utils.create_thumbnail(item_thumbnail_source)
         self.thumbnail_label = unicode(os.path.basename(self.thumbnail_path))
@@ -71,6 +73,10 @@ class BaseIngestObject:
             # handle image-type object
             self.obj_label = unicode(master_files[0])
             self.obj_path = os.path.join(pathroot, self.obj_label) 
+            fits_path = '%s.fits.xml' % (self.obj_path,) 
+            if os.path.exists(fits_path):
+                self.fits_path = fits_path
+                self.fits_label = os.path.basename(fits_path)
             self.jp2_label = drlrepo.ingest.utils.get_jp2_name(m, self.obj_label)
             self.jp2_path = os.path.join(pathroot, self.jp2_label)
         else:
@@ -94,6 +100,10 @@ class PageIngestObject:
         self.label = u'%s, %s' % (label, parent.label[0:205])
         self.obj_path = obj_path 
         self.obj_label = unicode(os.path.basename(self.obj_path))
+        fits_path = '%s.fits.xml' % (self.obj_path,) 
+        if os.path.exists(fits_path):
+            self.fits_path = fits_path
+            self.fits_label = os.path.basename(fits_path)
         self.jp2_label = self.obj_label.replace('.tif', '.jp2')
         self.jp2_path = self.obj_path.replace('.tif', '.jp2') 
         self.thumbnail_path = drlrepo.ingest.utils.create_thumbnail(self.obj_path)

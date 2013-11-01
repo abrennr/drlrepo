@@ -53,6 +53,11 @@ def get_item_thumbnail_source(m):
         if m['files'][f]['name'] == m['item']['thumb_filename']: 
             return m['files'][f]['name']
 
+def get_thumb_large_name(m):
+    for f in m['files']:
+        if m['files'][f]['use'] == 'THUMB_LARGE':
+            return m['files'][f]['name']
+
 def get_mods_name(m):
     for f in m['files']:
         if m['files'][f]['use'] == 'MODS':

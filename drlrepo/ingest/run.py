@@ -38,7 +38,7 @@ def handle_page_object(obj, page):
     It should also get:
         - MODS (this should be based on parent book mods, but with page label from METS structmap)
         - JP2 (derived from TIFF)
-        - MIX
+        - FITS  
         - OCR, if available
     """
     previous = repo.get_object(pid=page.pid)
@@ -103,6 +103,9 @@ def ingest_item(bag_path):
     # thumb
     obj.thumbnail.content = open(o.thumbnail_path)
     obj.thumbnail.label = o.thumbnail_label 
+    # large thumb
+    obj.thumbnail_large.content = open(o.thumbnail_large_path)
+    obj.thumbnail_large.label = o.thumbnail_large_label 
     # target
     if o.target_label:
         obj.target.content = open(o.target_path)
