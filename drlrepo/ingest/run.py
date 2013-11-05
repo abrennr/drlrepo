@@ -15,6 +15,9 @@ def handle_image_object(obj, o):
     obj.obj.label = o.obj_label 
     obj.jp2.content = open(o.jp2_path)
     obj.jp2.label = o.jp2_label 
+    if o.fits_path:
+        obj.fits.content = open(o.fits_path)
+        obj.fits.label = o.fits_label 
     # TODO: MIX
     obj.save()
 
@@ -53,6 +56,9 @@ def handle_page_object(obj, page):
     if page.ocr_path:
         page_obj.ocr.content = open(page.ocr_path)
         page_obj.ocr.label = page.ocr_label 
+    if page.fits_path:
+        page_obj.fits.content = open(page.fits_path)
+        page_obj.fits.label = page.fits_label 
     page_obj.thumbnail.content = open(page.thumbnail_path)
     page_obj.thumbnail.label = page.thumbnail_label 
     page_obj.save()

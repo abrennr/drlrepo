@@ -21,7 +21,9 @@ which will be ingested separately by the main ingest process.
 class BaseIngestObject:
     """A representation of a local object to be ingested."""
     pages = []
+    # optional fields:
     target_label = None 
+    fits_path = None
 
     def __init__(self, bag_path):
         pathroot = os.path.join(bag_path, 'data')
@@ -46,7 +48,7 @@ class BaseIngestObject:
         if self.target_label:
             self.target_path = os.path.join(pathroot, self.target_label) 
         self.thumbnail_large_label = drlrepo.ingest.utils.get_thumb_large_name(m)
-        self.thumbnail_large_path = os.path.join(pathroot, self.thumb_large_label) 
+        self.thumbnail_large_path = os.path.join(pathroot, self.thumbnail_large_label) 
         item_thumbnail_source = os.path.join(pathroot, drlrepo.ingest.utils.get_item_thumbnail_source(m))
         self.thumbnail_path = drlrepo.ingest.utils.create_thumbnail(item_thumbnail_source)
         self.thumbnail_label = unicode(os.path.basename(self.thumbnail_path))
@@ -56,18 +58,22 @@ class BaseIngestObject:
             parsed_mets = drlutils.mets.utils.get_parsed_mets(self.mets_path)
             page_label_dict = drlutils.mets.utils.get_page_label_dict(parsed_mets)
             cleaned_page_labels = drlutils.mets.utils.clean_page_labels(page_label_dict)
-            ocr_path = os.path.join(pathroot, drlrepo.ingest.utils.get_ocr_name(m))
-            ocr_zip = zipfile.ZipFile(ocr_path, 'r')
+            ocr_file = drlrepo.ingest.utils.get_ocr_name(m)
+            # ocr is not always present:
+            if ocr_file:
+                ocr_path = os.path.join(pathroot, ocr_file)
+                ocr_zip = zipfile.ZipFile(ocr_path, 'r')
             for f in master_files:
                 label = cleaned_page_labels[f]
                 print 'preparing page %s' % (label,)
                 f_path = os.path.join(pathroot, f) 
                 page = PageIngestObject(self, f_path, label, m)
-                ocr_label = '%s.txt' % (os.path.splitext(f)[0],)
-                if ocr_label in ocr_zip.namelist():
-                    ocr_zip.extract(ocr_label, drlrepo.ingest.config.TEMP_DIR) 
-                    page.ocr_label = ocr_label
-                    page.ocr_path = os.path.join(drlrepo.ingest.config.TEMP_DIR, ocr_label) 
+                if ocr_file:
+                    ocr_label = '%s.txt' % (os.path.splitext(f)[0],)
+                    if ocr_label in ocr_zip.namelist():
+                        ocr_zip.extract(ocr_label, drlrepo.ingest.config.TEMP_DIR) 
+                        page.ocr_label = ocr_label
+                        page.ocr_path = os.path.join(drlrepo.ingest.config.TEMP_DIR, ocr_label) 
                 self.pages.append(page)
         elif len(master_files) == 1:
             # handle image-type object
@@ -92,6 +98,9 @@ class BaseIngestObject:
 class PageIngestObject:
     """A representation of a page object. Child of a parent object being ingested."""
     fedora_type = drlrepo.ingest.utils.ITEM_TYPE_CM_MAP['page']
+    # optional fields:
+    ocr_path = None
+    fits_path = None
 
     def __init__(self, parent, obj_path, label, m):
         page_basename = os.path.splitext(os.path.basename(obj_path))[0]
