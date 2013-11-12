@@ -6,9 +6,11 @@ from eulxml.xmlmap.dc import DublinCore
 from eulxml.xmlmap.mods import MODS 
 import eulxml.xmlmap
 from drlrepo.ingest.models import BaseIngestObject 
+import logging
 import bagit
 
 repo = Repository()
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
 
 def handle_image_object(obj, o):
     obj.obj.content = open(o.obj_path)
@@ -85,13 +87,14 @@ def handle_page_object(obj, page):
     isSection = 'http://islandora.ca/ontology/relsext#isSection'
     page_obj.add_relationship(isSection, '1')
 
-    print 'ingested %s' % (page.label,)
+    logging.info('ingested %s', page.label)
 
 def ingest_item(bag_path):
     bag = bagit.Bag(bag_path)
     # real simple validation check for now
     if not bag.is_valid():
-        print 'bag %s failed validation check. Exiting.' % (bag_path,)
+        logging.critical('bag %s failed validation check. Exiting.', bag_path)
+        sys.exit(0)
     o = BaseIngestObject(bag_path)
     # check if item already exists.  For now, purge pre-existing versions
     previous = repo.get_object(pid=o.pid)
@@ -131,11 +134,12 @@ def ingest_item(bag_path):
     elif 'text' in o.type or 'manuscript' in o.type or 'newspaper' in o.type:
         handle_paged_object(obj, o)
     else:
-        print 'WARNING: %s not recognized item type for %s' % (o.type, o.pid)
+        logging.error('WARNING: %s not recognized item type for %s', o.type, o.pid)
     # clean up
     o.remove_thumbnail()
 
 if __name__ == '__main__':
     item_id = sys.argv[1]
-    print 'working with %s' % (item_id,)
+    logging.info('working with %s', item_id)
     ingest_item(item_id)
+    logging.info('%s - OK', item_id)

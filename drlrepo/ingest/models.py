@@ -6,6 +6,7 @@ import drlrepo.ingest.utils
 import drlrepo.ingest.config
 import drlutils.mods.utils
 import drlutils.mets.utils
+import logging
 
 """
 Models to hold relevant metadata (e.g., file paths, datastream names)
@@ -65,7 +66,7 @@ class BaseIngestObject:
                 ocr_zip = zipfile.ZipFile(ocr_path, 'r')
             for f in master_files:
                 label = cleaned_page_labels[f]
-                print 'preparing page %s' % (label,)
+                logging.info('preparing page %s', label)
                 f_path = os.path.join(pathroot, f) 
                 page = PageIngestObject(self, f_path, label, m)
                 if ocr_file:
