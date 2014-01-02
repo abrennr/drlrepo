@@ -10,7 +10,7 @@ import logging
 import bagit
 
 repo = Repository()
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.DEBUG)
 
 def handle_image_object(obj, o):
     obj.obj.content = open(o.obj_path)
@@ -61,12 +61,12 @@ def handle_page_object(obj, page):
     if page.fits_path:
         page_obj.fits.content = open(page.fits_path)
         page_obj.fits.label = page.fits_label 
-    page_obj.thumbnail.content = open(page.thumbnail_path)
-    page_obj.thumbnail.label = page.thumbnail_label 
+    #page_obj.thumbnail.content = open(page.thumbnail_path)
+    #page_obj.thumbnail.label = page.thumbnail_label 
     page_obj.save()
     # TODO: mix
     # clean up
-    page.remove_thumbnail()
+    #page.remove_thumbnail()
     page.remove_ocr()
 
     # RELS-EXT
@@ -140,6 +140,6 @@ def ingest_item(bag_path):
 
 if __name__ == '__main__':
     item_id = sys.argv[1]
-    logging.info('working with %s', item_id)
+    logging.debug('working with %s', item_id)
     ingest_item(item_id)
-    logging.info('%s - OK', item_id)
+    logging.info('%s ingested OK', item_id)

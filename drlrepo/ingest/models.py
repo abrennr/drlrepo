@@ -50,9 +50,8 @@ class BaseIngestObject:
             self.target_path = os.path.join(pathroot, self.target_label) 
         self.thumbnail_large_label = drlrepo.ingest.utils.get_thumb_large_name(m)
         self.thumbnail_large_path = os.path.join(pathroot, self.thumbnail_large_label) 
-        item_thumbnail_source = os.path.join(pathroot, drlrepo.ingest.utils.get_item_thumbnail_source(m))
-        self.thumbnail_path = drlrepo.ingest.utils.create_thumbnail(item_thumbnail_source)
-        self.thumbnail_label = unicode(os.path.basename(self.thumbnail_path))
+        self.thumbnail_label = drlrepo.ingest.utils.get_thumb_name(m)
+        self.thumbnail_path = os.path.join(pathroot, self.thumbnail_label)
         master_files = drlrepo.ingest.utils.get_master_file_list(m)
         if len(master_files) > 1:
             # assume this is a paged object
@@ -66,7 +65,7 @@ class BaseIngestObject:
                 ocr_zip = zipfile.ZipFile(ocr_path, 'r')
             for f in master_files:
                 label = cleaned_page_labels[f]
-                logging.info('preparing page %s', label)
+                logging.debug('preparing page %s', label)
                 f_path = os.path.join(pathroot, f) 
                 page = PageIngestObject(self, f_path, label, m)
                 if ocr_file:
@@ -116,13 +115,16 @@ class PageIngestObject:
             self.fits_label = os.path.basename(fits_path)
         self.jp2_label = self.obj_label.replace('.tif', '.jp2')
         self.jp2_path = self.obj_path.replace('.tif', '.jp2') 
-        self.thumbnail_path = drlrepo.ingest.utils.create_thumbnail(self.obj_path)
-        self.thumbnail_label = unicode(os.path.basename(self.thumbnail_path))
+        #self.thumbnail_path = drlrepo.ingest.utils.create_thumbnail(self.obj_path)
+        #self.thumbnail_label = unicode(os.path.basename(self.thumbnail_path))
         self.ocr_path = None
         self.ocr_label = None
 
     def remove_ocr(self):
-        os.remove(self.ocr_path)
+        try:
+            os.remove(self.ocr_path)
+        except:
+            pass
 
     def remove_thumbnail(self):
         try:
