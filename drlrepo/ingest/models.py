@@ -19,6 +19,28 @@ the relevant datastream paths and names are set.
 If the object is multi-paged, each page becomes a separate PageIngestObject
 which will be ingested separately by the main ingest process.
 """
+class CollectionIngestObject:
+    """A representation of a collection object to be ingested."""
+
+    def __init__(self, bag_path):
+        self.item_id = os.bath.basename(bag_path)
+        pathroot = os.path.join(bag_path, 'data')
+        thumb_filename = '%s.thumb.jpg' % (self.item_id,)
+        self.thumb_path = os.path.join(pathroot, thumb_filename)
+        large_thumb_filename = '%s.thumb_large.jpg' % (self.item_id,)
+        self.large_thumb_path = os.path.join(pathroot, large_thumb_filename)
+        description_filename = '%s.description.html' % (self.item_id,) 
+        self.description_path = os.path.join(pathroot, description_filename)
+
+    def is_valid(self):
+        valid = True
+        for path in [self.thumb_path, self.large_thumb_path, self.description_path]:
+            if not os.path.exists(path):
+                valid = False
+                logging.error('%s - %s does not exist' % (self.item_id, path))
+        return valid
+            
+
 class BaseIngestObject:
     """A representation of a local object to be ingested."""
     pages = []
@@ -52,6 +74,8 @@ class BaseIngestObject:
         self.thumbnail_large_path = os.path.join(pathroot, self.thumbnail_large_label) 
         self.thumbnail_label = drlrepo.ingest.utils.get_thumb_name(m)
         self.thumbnail_path = os.path.join(pathroot, self.thumbnail_label)
+        self.fedora_collections = drlrepo.ingest.utils.get_fedora_collections(m)
+        self.fedora_sites = drlrepo.ingest.utils.get_fedora_sites(m)
         master_files = drlrepo.ingest.utils.get_master_file_list(m)
         if len(master_files) > 1:
             # assume this is a paged object
@@ -103,6 +127,7 @@ class PageIngestObject:
     fits_path = None
 
     def __init__(self, parent, obj_path, label, m):
+        pathroot = os.path.split(obj_path)[0]
         page_basename = os.path.splitext(os.path.basename(obj_path))[0]
         self.seq = str(int(page_basename))
         self.pid = '%s-%s' % (parent.pid, page_basename)
@@ -113,10 +138,10 @@ class PageIngestObject:
         if os.path.exists(fits_path):
             self.fits_path = fits_path
             self.fits_label = os.path.basename(fits_path)
-        self.jp2_label = self.obj_label.replace('.tif', '.jp2')
-        self.jp2_path = self.obj_path.replace('.tif', '.jp2') 
-        #self.thumbnail_path = drlrepo.ingest.utils.create_thumbnail(self.obj_path)
-        #self.thumbnail_label = unicode(os.path.basename(self.thumbnail_path))
+        self.jp2_label = drlrepo.ingest.utils.get_jp2_name(m, self.obj_label)
+        self.jp2_path = os.path.join(pathroot, self.jp2_label) 
+        self.thumbnail_label = drlrepo.ingest.utils.get_page_thumb_name(m, self.obj_label)
+        self.thumbnail_path = os.path.join(pathroot, self.thumbnail_label) 
         self.ocr_path = None
         self.ocr_label = None
 

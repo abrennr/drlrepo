@@ -7,7 +7,7 @@ import glob
 import json
 import drlutils.image.utils
 import drlrepo.ingest.config
-from drlrepo.repo.models import PittLargeImage, PittBook, PittPage, PittNewspaperIssue 
+from drlrepo.repo.models import PittLargeImage, PittBook, PittPage, PittNewspaperIssue, PittCollection 
 """
 Utility script to migrate digital objects from the legacy (as of 2012)
 DRL repository to Fedora.
@@ -20,6 +20,7 @@ Fedora and upload all relevant datastreams.
 
 # map of legacy item types to eulfedora digital object models 
 ITEM_TYPE_CM_MAP = {
+    'collection': PittCollection,
     'image': PittLargeImage,
     'text - cataloged': PittBook,
     'text - uncataloged': PittBook,
@@ -47,6 +48,18 @@ def get_item_id(m):
 
 def get_item_type(m):
     return m['item']['type']
+
+def get_fedora_collections(m):
+    c = []
+    for i in m['fedora_collections']:
+        c.append(m['fedora_collections'][i]['pid'])
+    return c
+
+def get_fedora_sites(m):
+    c = []
+    for i in m['fedora_sites']:
+        c.append(m['fedora_sites'][i]['pid'])
+    return c
 
 def get_item_thumbnail_source(m): 
     for f in m['files']:
@@ -91,10 +104,18 @@ def get_master_file_list(m):
     return masters 
 
 def get_jp2_name(m, t):
-    expected_jp2_name = t.replace('.tif', '.jp2') 
+    expected_jp2_name = '%s.%s' % (os.path.splitext(t)[0], 'jp2') 
     for f in m['files']:
         if m['files'][f]['use'] == 'JP2':
             if m['files'][f]['name'] == expected_jp2_name:
+                return m['files'][f]['name']
+    return None
+
+def get_page_thumb_name(m, t):
+    expected_page_thumb_name = '%s.%s' % (os.path.splitext(t)[0], 'thumb.jpg') 
+    for f in m['files']:
+        if m['files'][f]['use'] == 'PAGE_THUMB':
+            if m['files'][f]['name'] == expected_page_thumb_name:
                 return m['files'][f]['name']
     return None
 
@@ -107,44 +128,4 @@ def get_target_name(m):
     for f in m['files']:
         if m['files'][f]['use'] == 'TARGET':
             return m['files'][f]['name']
-
-def create_thumbnail(thumb_source):
-    """
-    Creates a larger thumbnail (i.e., 250px on the long side) than what exists
-    in the legacy repository.  
-
-    @param item_id: object identifier 
-    @param thumb_source: if provided, use to create thumbnail, else look up 
-
-    returns path to the thumbnail file
-
-    """
-    shutil.copy(thumb_source, drlrepo.ingest.config.TEMP_DIR)
-    thumb_temp = os.path.join(drlrepo.ingest.config.TEMP_DIR, os.path.basename(thumb_source))
-    thumb_file = drlutils.image.utils.encode_thumb(thumb_temp, clobber=True, size='250') 
-    os.remove(thumb_temp)
-    return thumb_file
-
-def create_tmp_jp2(parent, tiff):
-    shutil.copy(tiff, drlrepo.ingest.config.TEMP_DIR)
-    jp2_source = os.path.join(drlrepo.ingest.config.TEMP_DIR, os.path.basename(tiff))
-    type = 'image'
-    if 'text' in parent.type: 
-        type = 'text'
-    jp2_file = drlutils.image.utils.encode_jp2(jp2_source, clobber=True, type=type) 
-    os.remove(jp2_source)
-    return jp2_file
-
-
-"""
-Note: this converter is not finished yet
-"""
-def create_pdf(fedora_object, tiff):
-    """
-    Create pdf derivative from tiff
-    """
-    baseName = os.path.splitext(tiff.name)[0]
-    pdf_file = os.path.join("drlrepo.ingest.config.TEMP_DIR", "%s.pdf" % baseName)
-    #os.remove(pdf_file)
-    return
 
