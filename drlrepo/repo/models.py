@@ -1,6 +1,24 @@
 from django.db import models
-from eulfedora.models import DigitalObject, FileDatastream, FileDatastream, RdfDatastream
-from islandora_models import IslandoraAudio, IslandoraBasicImage, IslandoraLargeImage, IslandoraBook, IslandoraPage, IslandoraNewspaperIssue, IslandoraPDF, IslandoraVideo 
+from eulfedora.models import DigitalObject, FileDatastream, XmlDatastream, RdfDatastream
+from eulxml.xmlmap.mods import MODS
+from islandora_models import IslandoraAudio, IslandoraBasicImage, IslandoraLargeImage, IslandoraBook, IslandoraPage, IslandoraNewspaperIssue, IslandoraPDF, IslandoraVideo, IslandoraCollection 
+
+
+class PittSite(DigitalObject):
+    SITE_CONTENT_MODEL = 'info:fedora/pitt:siteCModel'
+    CONTENT_MODELS = [ SITE_CONTENT_MODEL ]
+
+class PittCollection(IslandoraCollection):
+    thumbnail_large = FileDatastream("TN_LARGE", "Thumbnail - Large", defaults={
+        'mimetype': 'image/jpg',
+    })
+    description = FileDatastream("DESC", "Description", defaults={
+        'mimetype': 'text/html',
+    })
+    mods = XmlDatastream("MODS", "MODS", MODS, defaults={
+        'versionable': True,
+        'mimetype': 'text/xml',
+    })
 
 
 class PittBook(IslandoraBook):
