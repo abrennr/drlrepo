@@ -2,6 +2,15 @@ from django.db import models
 from eulfedora.models import DigitalObject, FileDatastream, FileDatastream, RdfDatastream, XmlDatastream
 from eulxml.xmlmap.mods import MODS
 
+class IslandoraCollection(DigitalObject):
+    ISLANDORA_CONTENT_MODEL = 'info:fedora/islandora:collectionCModel'
+    CONTENT_MODELS = [ ISLANDORA_CONTENT_MODEL ]
+    thumbnail = FileDatastream("TN", "Thumbnail", defaults={
+        'versionable': False,
+        'mimetype': 'image/jpeg',
+    })
+
+
 class IslandoraAudio(DigitalObject):
     ISLANDORA_CONTENT_MODEL = 'info:fedora/islandora:sp-audioCModel'
     CONTENT_MODELS = [ ISLANDORA_CONTENT_MODEL ]
@@ -92,7 +101,9 @@ class IslandoraPage(DigitalObject):
     hocr = FileDatastream("HOCR", "HOCR formatted OCR", defaults={
         'versionable': False,
     })
-    rels_int = RdfDatastream("RELS-INT", "RELS-INT") 
+    rels_int = RdfDatastream("RELS-INT", "RELS-INT", defaults={
+        'versionable': True,
+    }) 
 
 
 class IslandoraLargeImage(DigitalObject):
