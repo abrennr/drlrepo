@@ -31,6 +31,20 @@ ITEM_TYPE_CM_MAP = {
     'page': PittPage
 }
 
+def get_image_dimensions(image_path):
+    # use exiftool to get image dimensions for specified image
+    # exiftool called with -t for tab-delimited output, and
+    # only the specified '-ImageSize' tag
+    dim = subprocess.Popen([
+        drlrepo.ingest.config.EXIFTOOL_PATH,
+        '-t',
+        '-ImageSize',
+        image_path], 
+        stdout=subprocess.PIPE)
+    # read the line of stdout, strip newline, split on tab,
+    # then split on the 'x' height/width separator 
+    return dim.stdout.readline().strip().split('\t')[1].split('x')
+
 def get_item_metadata(bag_path):
     metadata_file_lookup = os.path.join(
         bag_path,
