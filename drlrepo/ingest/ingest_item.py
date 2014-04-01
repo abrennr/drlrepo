@@ -6,6 +6,7 @@ from eulxml.xmlmap.dc import DublinCore
 from eulxml.xmlmap.mods import MODS 
 import eulxml.xmlmap
 from drlrepo.ingest.models import BaseIngestObject 
+import drlrepo.ingest.utils
 import logging
 import logging.config
 import bagit
@@ -73,12 +74,13 @@ def handle_page_object(obj, page):
 
     # RELS-INT
     # include height and width of JP2 datastream
+    [this_width, this_height] = drlrepo.ingest.utils.get_image_dimensions(page.jp2_path) 
     jp2_uri = page_obj.uriref + u'/JP2'
     ISLANDORA_NS = Namespace(u'http://islandora.ca/ontology/relsint#')
     ISLANDORA_NS.width
     ISLANDORA_NS.height
-    page_obj.rels_int.content.add((jp2_uri, ISLANDORA_NS.width, Literal('3000')))
-    page_obj.rels_int.content.add((jp2_uri, ISLANDORA_NS.height, Literal('4000')))
+    page_obj.rels_int.content.add((jp2_uri, ISLANDORA_NS.width, Literal(this_width)))
+    page_obj.rels_int.content.add((jp2_uri, ISLANDORA_NS.height, Literal(this_height)))
     page_obj.save(logMessage="setting RELS-INT info")
     
     # clean up
