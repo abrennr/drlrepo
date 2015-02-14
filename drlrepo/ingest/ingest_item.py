@@ -26,7 +26,6 @@ def handle_image_object(obj, o):
     if o.fits_path:
         obj.fits.content = open(o.fits_path)
         obj.fits.label = o.fits_label 
-    # TODO: MIX
     obj.save()
 
 def handle_paged_object(obj, o):
@@ -76,7 +75,7 @@ def handle_page_object(obj, page):
     # include height and width of JP2 datastream
     [this_width, this_height] = drlrepo.ingest.utils.get_image_dimensions(page.jp2_path) 
     jp2_uri = page_obj.uriref + u'/JP2'
-    ISLANDORA_NS = Namespace(u'http://islandora.ca/ontology/relsint#')
+    ISLANDORA_NS = Namespace(u'http://islandora.ca/ontology/relsext#')
     ISLANDORA_NS.width
     ISLANDORA_NS.height
     page_obj.rels_int.content.add((jp2_uri, ISLANDORA_NS.width, Literal(this_width)))
