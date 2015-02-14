@@ -16,7 +16,7 @@ class IslandoraAudio(DigitalObject):
     CONTENT_MODELS = [ ISLANDORA_CONTENT_MODEL ]
     thumbnail = FileDatastream("TN", "Thumbnail", defaults={
         'versionable': False,
-        'mimetype': 'image/jpeg',
+        'mimetype': 'image/png',
     })
     mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
@@ -35,7 +35,7 @@ class IslandoraBasicImage(DigitalObject):
     CONTENT_MODELS = [ ISLANDORA_CONTENT_MODEL ]
     thumbnail = FileDatastream("TN", "Thumbnail", defaults={
         'versionable': False,
-        'mimetype': 'image/jpeg',
+        'mimetype': 'image/png',
     })
     mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
@@ -55,7 +55,7 @@ class IslandoraBook(DigitalObject):
     CONTENT_MODELS = [ ISLANDORA_CONTENT_MODEL ] 
     thumbnail = FileDatastream("TN", "Thumbnail", defaults={
         'versionable': False,
-        'mimetype': 'image/jpeg',
+        'mimetype': 'image/png',
     })
     mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
@@ -111,7 +111,7 @@ class IslandoraLargeImage(DigitalObject):
     CONTENT_MODELS = [ ISLANDORA_CONTENT_MODEL ]
     thumbnail = FileDatastream("TN", "Thumbnail", defaults={
         'versionable': False,
-        'mimetype': 'image/jpeg',
+        'mimetype': 'image/png',
     })
     mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
@@ -135,7 +135,7 @@ class IslandoraNewspaperIssue(DigitalObject):
     CONTENT_MODELS = [ ISLANDORA_CONTENT_MODEL ]
     thumbnail = FileDatastream("TN", "Thumbnail", defaults={
         'versionable': False,
-        'mimetype': 'image/jpeg',
+        'mimetype': 'image/png',
     })
     mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
@@ -151,7 +151,7 @@ class IslandoraPDF(DigitalObject):
     CONTENT_MODELS = [ ISLANDORA_CONTENT_MODEL ]
     thumbnail = FileDatastream("TN", "Thumbnail", defaults={
         'versionable': False,
-        'mimetype': 'image/jpeg',
+        'mimetype': 'image/png',
     })
     mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
@@ -174,7 +174,7 @@ class IslandoraVideo(DigitalObject):
     CONTENT_MODELS = [ ISLANDORA_CONTENT_MODEL ]
     thumbnail = FileDatastream("TN", "Thumbnail", defaults={
         'versionable': False,
-        'mimetype': 'image/jpeg',
+        'mimetype': 'image/png',
     })
     mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
