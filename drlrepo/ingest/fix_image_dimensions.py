@@ -22,7 +22,7 @@ def fix_page_object(page_pid, page_jp2_path, fedora_sites):
     page_obj = repo.get_object(pid=page_pid, type=PittPage)
     logger.debug('retrieved page object %s', page_obj.uriref)
 
-    # TODO: Remove existing RELS-INT
+    # Remove existing RELS-INT
     api_call_url = 'http://da-fed.library.pitt.edu:8080/fedora/objects/%s/datastreams/RELS-INT' % (page_pid,)
     logger.debug('REST-API call: %s', api_call_url)
     r = requests.delete(api_call_url, auth=(drlrepo.ingest.config.FEDORA_USER, drlrepo.ingest.config.FEDORA_PASS))
