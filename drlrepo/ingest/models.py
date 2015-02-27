@@ -77,8 +77,8 @@ class BaseIngestObject:
         self.fedora_collections = drlrepo.ingest.utils.get_fedora_collections(m)
         self.fedora_sites = drlrepo.ingest.utils.get_fedora_sites(m)
         master_files = drlrepo.ingest.utils.get_master_file_list(m)
-        if len(master_files) > 1:
-            # assume this is a paged object
+        #if len(master_files) > 1:
+        if 'text' in self.type or 'manuscript' in self.type or 'newspaper' in self.type:
             parsed_mets = drlutils.mets.utils.get_parsed_mets(self.mets_path)
             page_label_dict = drlutils.mets.utils.get_page_label_dict(parsed_mets)
             cleaned_page_labels = drlutils.mets.utils.clean_page_labels(page_label_dict)
@@ -99,7 +99,8 @@ class BaseIngestObject:
                         page.ocr_label = ocr_label
                         page.ocr_path = os.path.join(drlrepo.ingest.config.TEMP_DIR, ocr_label) 
                 self.pages.append(page)
-        elif len(master_files) == 1:
+        #elif len(master_files) == 1:
+        elif 'image' in self.type or 'map' in self.type: 
             # handle image-type object
             self.obj_label = unicode(master_files[0])
             self.obj_path = os.path.join(pathroot, self.obj_label) 

@@ -8,6 +8,7 @@ import json
 import drlutils.image.utils
 import drlrepo.ingest.config
 import logging
+import urllib2
 os.environ["DJANGO_SETTINGS_MODULE"] = 'drlrepo.settings'
 from eulfedora.server import Repository
 from eulxml.xmlmap.dc import DublinCore
@@ -96,6 +97,14 @@ def get_item_metadata(bag_path):
     else:
         raise Exception('metadata file not found, expecting %s' % (metadata_file_lookup,))
 
+
+def get_item_metadata_from_url(item_id):
+    url = 'http://bigfoot.library.pitt.edu/django/workflow/item/%s/json/' % (item_id,)
+    try:
+        return json.loads(urllib2.urlopen(url).read())
+    except:
+        return None
+
 def get_item_id(m):
     return m['item']['do_id']
 
@@ -155,6 +164,13 @@ def get_master_file_list(m):
         if m['files'][f]['use'] == 'MASTER':
             masters.append(m['files'][f]['name'])
     return masters 
+
+def get_jp2_file_list(m):
+    jp2s = []
+    for f in m['files']:
+        if m['files'][f]['use'] == 'JP2':
+            jp2s.append(m['files'][f]['path'])
+    return jp2s 
 
 def get_jp2_name(m, t):
     expected_jp2_name = '%s.%s' % (os.path.splitext(t)[0], 'jp2') 

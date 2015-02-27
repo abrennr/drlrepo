@@ -39,11 +39,11 @@ def handle_paged_object(obj, o):
     # TODO: pdf
     # pages
     for page in o.pages:
-        handle_page_object(obj, page)
+        handle_page_object(obj, page, o)
         time.sleep(.5)
     obj.save()
 
-def handle_page_object(obj, page):
+def handle_page_object(obj, page, o):
     """
     The page object gets some extra relationships as a member of a book object.
     It should also get:
@@ -103,6 +103,12 @@ def handle_page_object(obj, page):
     isSection = 'http://islandora.ca/ontology/relsext#isSection'
     page_obj.add_relationship(isSection, '1')
 
+    for site_pid in o.fedora_sites:
+        isMemberOfSite = 'http://digital.library.pitt.edu/ontology/relations#isMemberOfSite'
+        parent_uri = "info:fedora/%s" % (site_pid,)
+        page_obj.add_relationship(isMemberOfSite, str(parent_uri))
+
+
     logger.info('ingested %s', page.label)
 
 def ingest_item(bag_path):
@@ -113,9 +119,14 @@ def ingest_item(bag_path):
         sys.exit(0)
     o = BaseIngestObject(bag_path)
     # check if item already exists.  For now, purge pre-existing versions
+    ## check if item already exists.  For now, only update existing versions 
     previous = repo.get_object(pid=o.pid)
     if previous.exists:
         repo.purge_object(o.pid)
+    #else:
+    #    logger.warning('%s doesn\'t exist - skipping', o.pid)
+    #    sys.exit(0)
+        
     obj = repo.get_object(pid=o.pid, create=True, type=o.fedora_type)
     obj.label = o.label
     # mods
