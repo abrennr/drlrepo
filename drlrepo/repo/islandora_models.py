@@ -72,7 +72,7 @@ class IslandoraPage(DigitalObject):
     CONTENT_MODELS = [ ISLANDORA_CONTENT_MODEL ]
     thumbnail = FileDatastream("TN", "Thumbnail", defaults={
         'versionable': False,
-        'mimetype': 'image/jpeg',
+        'mimetype': 'image/png',
     })
     mods = XmlDatastream("MODS", "MODS", MODS, defaults={
         'versionable': True,
