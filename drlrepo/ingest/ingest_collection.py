@@ -5,6 +5,7 @@ import logging
 import bagit
 import csv
 import time
+import drlrepo.ingest.config
 from eulfedora.server import Repository
 from drlrepo.repo.models import PittCollection
 
@@ -35,9 +36,8 @@ def ingest_collection(pid, label, sites):
     # RELS-EXT
     # collection isMemberOf
     for coll_pid in sites:
-        isMemberOf = 'http://digital.library.pitt.edu/ontology/relations#isMemberOfSite'
         parent_uri = 'info:fedora/%s' % (coll_pid,)
-        obj.add_relationship(isMemberOf, parent_uri)
+        obj.add_relationship(drlrepo.ingest.config.IS_MEMBER_OF_SITE, parent_uri)
 
 if __name__ == '__main__':
     this_csv = csv.reader(open(sys.argv[1], 'r'))
