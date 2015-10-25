@@ -7,6 +7,7 @@ from eulxml.xmlmap.mods import MODS
 import eulxml.xmlmap
 from drlrepo.ingest.models import BaseIngestObject 
 import drlrepo.ingest.utils
+import drlrepo.ingest.config
 import logging
 import logging.config
 import bagit
@@ -40,7 +41,7 @@ def handle_paged_object(obj, o):
     # pages
     for page in o.pages:
         handle_page_object(obj, page, o)
-        time.sleep(.5)
+        time.sleep(3)
     obj.save()
 
 def handle_page_object(obj, page, o):
@@ -87,26 +88,20 @@ def handle_page_object(obj, page, o):
 
     # RELS-EXT
 
-    isPageOf = 'http://islandora.ca/ontology/relsext#isPageOf'
-    page_obj.add_relationship(isPageOf, str(obj.uri))
+    page_obj.add_relationship(drlrepo.ingest.config.IS_PAGE_OF, str(obj.uri))
 
-    isMemberOf = 'info:fedora/fedora-system:def/relations-external#isMemberOf'
-    page_obj.add_relationship(isMemberOf, str(obj.uri))
+    page_obj.add_relationship(drlrepo.ingest.config.IS_MEMBER_OF, str(obj.uri))
 
-    isPageNumber = 'http://islandora.ca/ontology/relsext#isPageNumber'
-    page_obj.add_relationship(isPageNumber, page.label)
+    page_obj.add_relationship(drlrepo.ingest.config.IS_PAGE_NUMBER, page.label)
 
     # should the page number be a counter here instead of int(page_basename)?
-    isSequenceNumber = 'http://islandora.ca/ontology/relsext#isSequenceNumber'
-    page_obj.add_relationship(isSequenceNumber, page.seq)
+    page_obj.add_relationship(drlrepo.ingest.config.IS_SEQUENCE_NUMBER, page.seq)
 
-    isSection = 'http://islandora.ca/ontology/relsext#isSection'
-    page_obj.add_relationship(isSection, '1')
+    page_obj.add_relationship(drlrepo.ingest.config.IS_SECTION, '1')
 
     for site_pid in o.fedora_sites:
-        isMemberOfSite = 'http://digital.library.pitt.edu/ontology/relations#isMemberOfSite'
         parent_uri = "info:fedora/%s" % (site_pid,)
-        page_obj.add_relationship(isMemberOfSite, str(parent_uri))
+        page_obj.add_relationship(drlrepo.ingest.config.IS_MEMBER_OF_SITE, str(parent_uri))
 
 
     logger.info('ingested %s', page.label)
@@ -148,18 +143,16 @@ def ingest_item(bag_path):
         obj.target.label = o.target_label 
     # initial save
     obj.save()
-    time.sleep(.5)
+    time.sleep(3)
         
     # RELS-EXT
     # collection isMemberOf
     for collection_pid in o.fedora_collections:
-        isMemberOfCollection = 'info:fedora/fedora-system:def/relations-external#isMemberOfCollection'
         parent_uri = "info:fedora/%s" % (collection_pid,)
-        obj.add_relationship(isMemberOfCollection, str(parent_uri))
+        obj.add_relationship(drlrepo.ingest.config.IS_MEMBER_OF_COLLECTION, str(parent_uri))
     for site_pid in o.fedora_sites:
-        isMemberOfSite = 'http://digital.library.pitt.edu/ontology/relations#isMemberOfSite'
         parent_uri = "info:fedora/%s" % (site_pid,)
-        obj.add_relationship(isMemberOfSite, str(parent_uri))
+        obj.add_relationship(drlrepo.ingest.config.IS_MEMBER_OF_SITE, str(parent_uri))
 
     # handle different types:
     if o.type == 'image' or o.type == 'map':
