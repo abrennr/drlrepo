@@ -9,6 +9,7 @@ import drlrepo.ingest.config
 import logging
 import logging.config
 import requests
+import time 
 from rdflib import RDFS, Literal, Namespace
 
 repo = Repository()
@@ -23,7 +24,7 @@ def fix_page_object(page_pid, page_jp2_path, fedora_sites):
     logger.debug('retrieved page object %s', page_obj.uriref)
 
     # Remove existing RELS-INT
-    api_call_url = 'http://da-fed.library.pitt.edu:8080/fedora/objects/%s/datastreams/RELS-INT' % (page_pid,)
+    api_call_url = '%s/fedora/objects/%s/datastreams/RELS-INT' % (drlrepo.ingest.config.FEDORA_URL, page_pid,)
     logger.debug('REST-API call: %s', api_call_url)
     r = requests.delete(api_call_url, auth=(drlrepo.ingest.config.FEDORA_USER, drlrepo.ingest.config.FEDORA_PASS))
     if not r.status_code == requests.codes.ok:
@@ -47,9 +48,8 @@ def fix_page_object(page_pid, page_jp2_path, fedora_sites):
 
     # collection isMemberOf
     for site_pid in fedora_sites:
-        isMemberOfSite = 'http://digital.library.pitt.edu/ontology/relations#isMemberOfSite'
         parent_uri = "info:fedora/%s" % (site_pid,)
-        page_obj.add_relationship(isMemberOfSite, str(parent_uri))
+        page_obj.add_relationship(drlrepo.ingest.config.IS_MEMBER_OF_SITE, str(parent_uri))
 
     logger.info('fixed %s', page_pid)
 
@@ -68,6 +68,7 @@ if __name__ == '__main__':
             page_pid = 'pitt:' + do_id + '-' + page_seq
             logger.debug('calling fix_page_object with %s, %s', page_pid, jp2_path)
             error_status = fix_page_object(page_pid, jp2_path, fedora_sites)           
+            time.sleep(1.5)
         if error_status:
             logger.warning('%s problems fixing pages', do_id)
         else:
